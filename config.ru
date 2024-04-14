@@ -3,7 +3,7 @@
 require 'bundler/setup'
 require 'hanami/api'
 require 'duckdb'
-require 'overpass_parser/visitor'
+require 'overpass_parser'
 require 'overpass_parser/sql_dialect/duckdb'
 require 'json'
 
@@ -40,14 +40,14 @@ class App < Hanami::API
 
   get '/interpreter' do
     query = params[:data]
-    request = OverpassParser.tree(query)[0]
-    dialect = OverpassParser::SqlDialect::Duckdb.new
-    sql = request.to_sql(dialect)
-    puts sql
-    result = @@con.query(sql)
-    # "timestamp_osm_base": "2024-04-08T20:16:26Z",
-    # "timestamp_areas_base": "2024-04-08T16:33:59Z",
-    json = "{
+    begin
+      request = OverpassParser.parse(query)
+      dialect = OverpassParser::SqlDialect::Duckdb.new
+      sql = request.to_sql(dialect)
+        result = @@con.query(sql)
+      # "timestamp_osm_base": "2024-04-08T20:16:26Z",
+      # "timestamp_areas_base": "2024-04-08T16:33:59Z",
+      json = "{
 \"version\": 0.6,
 \"generator\": \"underpass\",
 \"osm3s\": {
@@ -56,21 +56,30 @@ class App < Hanami::API
   \"copyright\": \"The data included in this document is from www.openstreetmap.org. The data is made available under ODbL.\"
 },
 \"elements\": [" + result.collect(&:first).join(",\n") + ']}'
-    headers['Access-Control-Allow-Origin'] = '*'
-    headers['Content-Type'] = 'application/json'
-    body(json)
+      headers['Access-Control-Allow-Origin'] = '*'
+      headers['Content-Type'] = 'application/json'
+      body(json)
+    rescue OverpassParser::ParsingError => e
+      headers['Access-Control-Allow-Origin'] = '*'
+      headers['Content-Type'] = 'text/html'
+      body("<html>
+<body>
+<p><strong style=\"color:#FF0000\">Error</strong>: #{e}</p>
+</body>
+</html>")
+    end
   end
 
   post '/interpreter' do
     query = params[:data]
-    request = OverpassParser.tree(query)[0]
-    dialect = OverpassParser::SqlDialect::Duckdb.new
-    sql = request.to_sql(dialect)
-    puts sql
-    result = @@con.query(sql)
-    # "timestamp_osm_base": "2024-04-08T20:16:26Z",
-    # "timestamp_areas_base": "2024-04-08T16:33:59Z",
-    json = "{
+    begin
+      request = OverpassParser.parse(query)
+      dialect = OverpassParser::SqlDialect::Duckdb.new
+      sql = request.to_sql(dialect)
+      result = @@con.query(sql)
+      # "timestamp_osm_base": "2024-04-08T20:16:26Z",
+      # "timestamp_areas_base": "2024-04-08T16:33:59Z",
+      json = "{
 \"version\": 0.6,
 \"generator\": \"underpass\",
 \"osm3s\": {
@@ -79,9 +88,18 @@ class App < Hanami::API
   \"copyright\": \"The data included in this document is from www.openstreetmap.org. The data is made available under ODbL.\"
 },
 \"elements\": [" + result.collect(&:first).join(",\n") + ']}'
-    headers['Access-Control-Allow-Origin'] = '*'
-    headers['Content-Type'] = 'application/json'
-    body(json)
+      headers['Access-Control-Allow-Origin'] = '*'
+      headers['Content-Type'] = 'application/json'
+      body(json)
+    rescue OverpassParser::ParsingError => e
+      headers['Access-Control-Allow-Origin'] = '*'
+      headers['Content-Type'] = 'text/html'
+      body("<html>
+<body>
+<p><strong style=\"color:#FF0000\">Error</strong>: #{e}</p>
+</body>
+</html>")
+    end
   end
 end
 
