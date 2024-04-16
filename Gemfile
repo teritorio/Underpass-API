@@ -19,7 +19,6 @@ group :development do
   gem 'rubocop-rake', require: false
   gem 'ruby-lsp', require: false
   gem 'sorbet'
-  gem 'sorbet-rails'
   gem 'tapioca', require: false
   gem 'test-unit'
 

@@ -36,8 +36,6 @@ class App < Hanami::API
     ")
   end
 
-  def self.overpass(query); end
-
   get '/interpreter' do
     query = params[:data]
     begin
