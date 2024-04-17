@@ -4,12 +4,12 @@ require 'bundler/setup'
 require 'hanami/api'
 require 'overpass_parser'
 require 'json'
-require_relative 'backends/duckdb_quackosm'
+require_relative 'backends/postgres_osmosis'
 
 class App < Hanami::API
   def initialize
     super
-    @@backend = DuckdbQuackosm.new
+    @@backend = PostgresOsmosis.new
   end
 
   helpers do

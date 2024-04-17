@@ -7,6 +7,7 @@ Underpass-API aim to be a [Overpass-API](https://github.com/drolbr/Overpass-API)
 ## Prepare the data
 
 Folow the instruction of one of the backends:
+* Postgres/PostGIS, Osmosis schema
 * DuckDB/Spatial, Quackosm schema
 
 ## Run the server

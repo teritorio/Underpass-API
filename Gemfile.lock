@@ -10,9 +10,6 @@ GEM
   remote: https://rubygems.org/
   specs:
     ast (2.4.2)
-    bigdecimal (3.1.7)
-    duckdb (0.10.1.1)
-      bigdecimal (>= 3.1.4)
     erubi (1.12.0)
     hanami-api (0.3.0)
       hanami-router (~> 2.0)
@@ -35,6 +32,7 @@ GEM
     parser (3.3.0.5)
       ast (~> 2.4.1)
       racc
+    pg (1.5.6)
     power_assert (2.0.3)
     prism (0.24.0)
     psych (5.1.2)
@@ -113,10 +111,10 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
-  duckdb
   hanami-api
   minitest
   overpass_parser!
+  pg
   psych
   puma (~> 6.0)
   racc
