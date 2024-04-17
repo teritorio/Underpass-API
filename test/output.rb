@@ -1,8 +1,8 @@
-require 'minitest/autorun'
+require 'test/unit'
 require 'net/http'
 require 'json'
 
-class OutputTest < Minitest::Test
+class OutputTest < Test::Unit::TestCase
   def test_output_format
     type = {
       'node' => {
