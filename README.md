@@ -6,25 +6,8 @@ Underpass-API aim to be a [Overpass-API](https://github.com/drolbr/Overpass-API)
 
 ## Prepare the data
 
-Tow SQL backends are available.
-
-### Postgres/PostGIS
-See overpass_parser-rb doc.
-
-### DuckDB/Spatial, Quackosm schema
-
-Install Quackosm
-```
-python -m venv venv
-source venv/bin/activate
-pip install quackosm[cli]
-```
-
-Prepare the data
-```
-quackosm landes.osm.pbf
-mv landes_nofilter_noclip_compact.geoparquet landes_nofilter_noclip_compact.parquet
-```
+Folow the instruction of one of the backends:
+* DuckDB/Spatial, Quackosm schema
 
 ## Run the server
 
@@ -35,5 +18,6 @@ bundle
 
 Run the HTTP server
 ```
-DB=landes_nofilter_noclip_compact.parquet bundle exec rackup
+DB=landes_nofilter_noclip_compact.parquet
+bundle exec rackup
 ```
