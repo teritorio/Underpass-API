@@ -12,15 +12,10 @@ cat /usr/share/doc/osmosis/examples/pgsnapshot_schema_0.6_linestring.sql | psql 
 osmosis \
   --read-pbf /data/landes-latest.osm.pbf \
   --write-pgsql host=postgres database=postgres user=postgres password=postgres
+cat /backends/postgres_osmosis_init.sql | psql $DATABASE_URL
 ```
 
 ```sql
-CREATE INDEX nodes_idx_tags ON nodes USING gist(tags) WHERE tags != ''::hstore;
-CREATE INDEX ways_idx_tags ON ways USING gist(tags) WHERE tags != ''::hstore;
-CREATE INDEX relations_idx_tags ON relations USING gist(tags) WHERE tags != ''::hstore;
-
-CREATE INDEX ways_idx_geom ON nodes USING gist(geom);
-CREATE INDEX ways_idx_linestring ON ways USING gist(linestring);
 ```
 
 ## Run the server

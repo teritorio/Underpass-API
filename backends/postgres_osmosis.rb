@@ -14,6 +14,6 @@ class PostgresOsmosis
     request = OverpassParser.parse(query)
     sql = request.to_sql(@dialect)
     result = @@con.exec(sql)
-    [sql, result.collect { |row| row['j'] }]
+    [sql, result.collect { |row| row['j'].gsub('+00:00', 'Z') }]
   end
 end

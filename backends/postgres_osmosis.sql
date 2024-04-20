@@ -1,14 +1,14 @@
 CREATE OR REPLACE TEMP VIEW node AS
-SELECT id, version, tstamp AS created, tags, NULL::bigint[] AS nodes, NULL::jsonb AS members, geom, 'n' AS osm_type FROM nodes;
+SELECT id, version, tstamp::timestamp with time zone AS created, tags, NULL::bigint[] AS nodes, NULL::jsonb AS members, geom, 'n' AS osm_type FROM nodes;
 
 CREATE OR REPLACE TEMP VIEW way AS
-SELECT id, version, tstamp AS created, tags, nodes, NULL::jsonb AS members, linestring AS geom, 'w' AS osm_type FROM ways;
+SELECT id, version, tstamp::timestamp with time zone AS created, tags, nodes, NULL::jsonb AS members, linestring AS geom, 'w' AS osm_type FROM ways;
 
 CREATE OR REPLACE TEMP VIEW relation AS
 SELECT
     id,
     version,
-    tstamp AS created,
+    tstamp::timestamp with time zone AS created,
     tags,
     NULL::bigint[] AS nodes,
     jsonb_agg(jsonb_build_object(
@@ -34,4 +34,10 @@ UNION ALL
 SELECT * FROM way
 UNION ALL
 SELECT * FROM relation
+;
+
+CREATE OR REPLACE TEMP VIEW area AS
+SELECT id, NULL::integer AS version, NULL::timestamp with time zone AS created, tags, NULL::bigint[] AS nodes, NULL::jsonb AS members, poly AS geom, 'a' AS osm_type FROM multipolygons WHERE id > 3600000000
+UNION ALL
+SELECT id, version, tstamp::timestamp with time zone AS created, tags, nodes AS nodes, NULL::jsonb AS members, ST_MakePolygon(linestring)::geometry(Geometry,4326) AS geom, 'w' AS osm_type FROM ways WHERE id < 3600000000 AND ST_IsClosed(linestring) AND ST_Dimension(ST_MakePolygon(linestring)) = 2
 ;
