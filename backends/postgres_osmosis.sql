@@ -1,32 +1,11 @@
 CREATE OR REPLACE TEMP VIEW node AS
-SELECT id, version, tstamp::timestamp with time zone AS created, tags, NULL::bigint[] AS nodes, NULL::jsonb AS members, geom, 'n' AS osm_type FROM nodes;
+SELECT id, version, tstamp, changeset_id, user_id, tags, NULL::bigint[] AS nodes, NULL::jsonb AS members, geom, 'n' AS osm_type FROM nodes;
 
 CREATE OR REPLACE TEMP VIEW way AS
-SELECT id, version, tstamp::timestamp with time zone AS created, tags, nodes, NULL::jsonb AS members, linestring AS geom, 'w' AS osm_type FROM ways;
+SELECT id, version, tstamp, changeset_id, user_id, tags, nodes, NULL::jsonb AS members, linestring AS geom, 'w' AS osm_type FROM ways;
 
 CREATE OR REPLACE TEMP VIEW relation AS
-SELECT
-    id,
-    version,
-    tstamp::timestamp with time zone AS created,
-    tags,
-    NULL::bigint[] AS nodes,
-    jsonb_agg(jsonb_build_object(
-        'type', CASE relation_members.member_type WHEN 'N' THEN 'node' WHEN 'W' THEN 'way' WHEN 'R' THEN 'relation' END,
-        'ref', relation_members.member_id,
-        'role', relation_members.member_role
-    )) AS members,
-    NULL::geometry AS geom,
-    'r' AS osm_type
-FROM relations
-    JOIN relation_members ON
-        relation_members.relation_id = relations.id
-GROUP BY
-    relations.id,
-    relations.version,
-    relations.tstamp,
-    relations.tags
-;
+SELECT id, version, tstamp, changeset_id, user_id, tags,  NULL::bigint[] AS nodes, NULL::jsonb AS members, NULL::geometry AS geom, 'r' AS osm_type FROM relations;
 
 CREATE OR REPLACE TEMP VIEW nwr AS
 SELECT * FROM node
@@ -37,7 +16,7 @@ SELECT * FROM relation
 ;
 
 CREATE OR REPLACE TEMP VIEW area AS
-SELECT id, NULL::integer AS version, NULL::timestamp with time zone AS created, tags, NULL::bigint[] AS nodes, NULL::jsonb AS members, poly AS geom, 'a' AS osm_type FROM multipolygons WHERE id > 3600000000
+SELECT id, NULL::integer AS version, NULL::timestamp without time zone AS tstamp, NULL::bigint AS changeset_id, NULL::integer AS user_id, tags, NULL::bigint[] AS nodes, NULL::jsonb AS members, poly AS geom, 'a' AS osm_type FROM multipolygons WHERE id > 3600000000
 UNION ALL
-SELECT id, version, tstamp::timestamp with time zone AS created, tags, nodes AS nodes, NULL::jsonb AS members, ST_MakePolygon(linestring)::geometry(Geometry,4326) AS geom, 'w' AS osm_type FROM ways WHERE id < 3600000000 AND ST_IsClosed(linestring) AND ST_Dimension(ST_MakePolygon(linestring)) = 2
+SELECT id, version, tstamp::timestamp with time zone AS created, changeset_id, user_id, tags, nodes AS nodes, NULL::jsonb AS members, ST_MakePolygon(linestring)::geometry(Geometry,4326) AS geom, 'w' AS osm_type FROM ways WHERE id < 3600000000 AND ST_IsClosed(linestring) AND ST_Dimension(ST_MakePolygon(linestring)) = 2
 ;

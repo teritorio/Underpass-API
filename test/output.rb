@@ -142,12 +142,12 @@ class OutputTest < Test::Unit::TestCase
             response = JSON.parse(Net::HTTP.get(uri))['elements']
             # puts JSON.dump(response)
             response = response.collect do |e|
-              e = e.compact.except('changeset', 'user', 'uid', 'members', 'bounds')
+              e = e.compact.except('members', 'bounds')
               e['center'] = nil if e.key?('center')
               e
             end
             except = JSON.parse(except).collect do |e|
-              e = e.compact.except('changeset', 'user', 'uid', 'members', 'bounds')
+              e = e.compact.except('members', 'bounds')
               e['center'] = nil if e.key?('center')
               e
             end
