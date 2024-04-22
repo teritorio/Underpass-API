@@ -7,7 +7,7 @@ class PostgresOsmosis
   def initialize
     @@con = PG.connect(ENV['DATABASE_URL'])
     @@con.query(File.read(__FILE__.gsub(/\.rb$/, '.sql')))
-    @dialect = OverpassParser::SqlDialect::Postgres.new
+    @dialect = OverpassParser::SqlDialect::Postgres.new(postgres_escape_literal: ->(s) { @@con.escape_literal(s) })
   end
 
   def exec(query)
