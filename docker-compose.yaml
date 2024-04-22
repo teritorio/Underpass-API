@@ -1,0 +1,42 @@
+version: "3.3"
+
+services:
+  postgres:
+    image: postgis/postgis:15-3.4
+    shm_size: 1g
+    environment:
+      POSTGRES_HOST_AUTH_METHOD: trust
+    volumes:
+      - ./docker/postgres/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+      - pgdata:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  api:
+    build:
+      context: .
+    environment:
+      DATABASE_URL: postgresql://postgres@postgres:5432/postgres
+    volumes:
+      - ./config.ru:/srv/app/config.ru
+      - ./backends:/srv/app/backends
+    ports:
+      - ${API_PORT:-9292}:9292
+    depends_on:
+      - postgres
+    command: bundle exec rackup --host 0.0.0.0
+    restart: unless-stopped
+
+  osmosis:
+    profiles: [tools]
+    build:
+      context: docker/osmosis
+    environment:
+      DATABASE_URL: postgresql://postgres@postgres:5432/postgres
+    volumes:
+      - ./backends:/backends
+      - ./data:/data
+    depends_on:
+      - postgres
+
+volumes:
+  pgdata:
