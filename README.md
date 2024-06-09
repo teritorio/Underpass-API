@@ -4,21 +4,12 @@ An Overpass-API on SQL Database.
 
 Underpass-API aim to be a [Overpass-API](https://github.com/drolbr/Overpass-API) compatible engine built upon [converter](https://github.com/teritorio/overpass_parser-rb) from Overpass Language to SQL.
 
-## Prepare the data
+## Prepare the data & Run the server
 
 Folow the instruction of one of the backends:
-* Postgres/PostGIS, Osmosis schema
-* DuckDB/Spatial, Quackosm schema
+* [Postgres+PostGIS / Osmosis](backends/postgres_osmosis/README.md), Osmosis schema
+* [DuckDB+Spatial / QuackOSM](backends/duckdb_quackosm/README.md), Quackosm schema
 
-## Run the server
+## Query
 
-Install dependencies
-```
-bundle
-```
-
-Run the HTTP server
-```
-DB=landes_nofilter_noclip_compact.parquet
-bundle exec rackup
-```
+The API as available at http://localhost:9292/interpreter

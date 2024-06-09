@@ -1,0 +1,12 @@
+version: "3.3"
+
+services:
+  api:
+    build:
+      context: .
+    volumes:
+      - ./config.ru:/srv/app/config.ru
+    ports:
+      - ${API_PORT:-9292}:9292
+    command: bundle exec rackup --host 0.0.0.0
+    restart: unless-stopped

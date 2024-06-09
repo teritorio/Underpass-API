@@ -8,7 +8,8 @@ class DuckdbQuackosm
     parquet = ENV['DB']
     db = DuckDB::Database.open # database in memory
     @@con = db.connect
-    @@con.query(File.read(__FILE__.gsub(/\.rb$/, '.sql')).gsub('#{parquet}', parquet))
+    @@con.query(File.read(File.dirname(__FILE__) + '/view.sql').gsub('#{parquet}', parquet))
+
     @dialect = OverpassParser::SqlDialect::Duckdb.new
   end
 

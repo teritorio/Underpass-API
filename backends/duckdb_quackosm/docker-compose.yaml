@@ -1,0 +1,17 @@
+version: "3.3"
+
+services:
+  quackosm:
+    profiles: [tools]
+    build:
+      context: docker/quackosm
+    volumes:
+      - ../../data:/data
+
+  api:
+    extends:
+      file: ../../docker-compose-base.yaml
+      service: api
+    environment:
+      BACKEND: DuckdbQuackosm
+      DB: /data/extract_nofilter_noclip_compact.parquet
