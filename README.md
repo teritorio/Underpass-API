@@ -6,9 +6,21 @@ Underpass-API aim to be a [Overpass-API](https://github.com/drolbr/Overpass-API)
 
 ## Prepare the data & Run the server
 
-Folow the instruction of one of the backends:
+### With docker (recommended)
+
+Follow the instruction of one of the backends:
 * [Postgres+PostGIS / Osmosis](backends/postgres_osmosis/README.md), Osmosis schema
 * [DuckDB+Spatial / QuackOSM](backends/duckdb_quackosm/README.md), Quackosm schema
+
+### Without docker
+
+It is possible to use Underpass-API without docker with the following instructions :
+
+* declare environment variables (add new lines in `~/.bashrc` or `~/.profile` then reload with `source ~/.bashrc`) :
+  - DuckDB+Spatial / QuackOSM: `export BACKEND="DuckdbQuackosm"` and `export DB="/data/database.parquet"`
+  - Postgres+PostGIS / Osmosis: `export BACKEND="PostgresOsmosis"` and `export "DATABASE_URL='postgresql://user:pw@host:5432/database"`
+* install software : `bundle install`
+* start server : `bundle exec rackup`
 
 ## Query
 
