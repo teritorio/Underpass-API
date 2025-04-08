@@ -1,11 +1,12 @@
-FROM ruby:3.0-alpine
+FROM ruby:3.3-alpine
 
 RUN apk add --no-cache --virtual \
         build-dependencies \
         build-base \
         git \
         ruby-dev \
-        postgresql-dev
+        postgresql-dev \
+        yaml-dev
 
 WORKDIR /srv/app
 
