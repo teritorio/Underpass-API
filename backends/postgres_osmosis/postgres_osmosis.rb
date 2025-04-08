@@ -14,6 +14,7 @@ class PostgresOsmosis
     request = OverpassParser.parse(query)
     sql = request.to_sql(
       @dialect,
+      4326,
       "
 SELECT
   results.id,

@@ -15,7 +15,7 @@ class DuckdbQuackosm
 
   def exec(query)
     request = OverpassParser.parse(query)
-    sql = request.to_sql(@dialect)
+    sql = request.to_sql(@dialect, 4326)
     result = @@con.query(sql)
     [sql, result.collect(&:first)]
   end
