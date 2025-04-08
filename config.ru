@@ -10,7 +10,7 @@ require_relative 'backends/duckdb_quackosm/duckdb_quackosm'
 class App < Hanami::API
   def initialize
     super
-    @@backend = ENV['BACKEND'].constantize.new
+    @@backend = Object::const_get(ENV['BACKEND']).new
   end
 
   helpers do
