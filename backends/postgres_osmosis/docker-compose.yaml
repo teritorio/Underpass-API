@@ -9,6 +9,7 @@ services:
       DATABASE_URL: postgresql://postgres@postgres:5432/postgres
     volumes:
       - ../../data:/data
+      - .:/backends
     depends_on:
       - postgres
 
