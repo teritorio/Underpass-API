@@ -1,4 +1,4 @@
-CREATE EXTENSION IF NOT EXISTS htsore;
+CREATE EXTENSION IF NOT EXISTS hstore;
 
 -- Same as ->, for code compatibility with json
 CREATE OPERATOR ->> (
