@@ -12,15 +12,16 @@ Follow the instruction of one of the backends:
 * [Postgres+PostGIS / Osmosis](backends/postgres_osmosis/README.md), Osmosis schema
 * [DuckDB+Spatial / QuackOSM](backends/duckdb_quackosm/README.md), Quackosm schema
 
-### Without docker
+### Without Docker
 
-It is possible to use Underpass-API without docker with the following instructions :
+It is possible to use Underpass-API without Docker with the following instructions :
 
-* declare environment variables (add new lines in `~/.bashrc` or `~/.profile` then reload with `source ~/.bashrc`) :
-  - DuckDB+Spatial / QuackOSM: `export BACKEND="DuckdbQuackosm"` and `export DB="/data/database.parquet"`
-  - Postgres+PostGIS / Osmosis: `export BACKEND="PostgresOsmosis"` and `export "DATABASE_URL='postgresql://user:pw@host:5432/database"`
-* install software : `bundle install`
-* start server : `bundle exec rackup`
+* Install Ruby dependencies with `bundle install`.
+* Start the server with
+  * `BACKEND="DuckdbQuackosm" DB="data/database.parquet" bundle exec rackup`
+  * `BACKEND="PostgresOsmosis" DB="postgresql://user:pw@host:5432/database" bundle exec rackup`
+
+Fo details about setup, looks at specific backend directory, and in Dockerfile for system dependencies.
 
 ## Query
 
