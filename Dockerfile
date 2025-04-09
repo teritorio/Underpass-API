@@ -13,7 +13,6 @@ WORKDIR /srv/app
 ADD Gemfile Gemfile.lock ./
 RUN bundle config --global silence_root_warning 1
 RUN bundle install
-RUN cd /usr/local/bundle/bundler/gems/overpass_parser-rb-*/ext/overpass_parser/ && make
 
 ADD . ./
 
