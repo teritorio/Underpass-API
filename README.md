@@ -9,8 +9,9 @@ Underpass-API aim to be a [Overpass-API](https://github.com/drolbr/Overpass-API)
 ### With docker (recommended)
 
 Follow the instruction of one of the backends:
-* [Postgres+PostGIS / Osmosis](backends/postgres_osmosis/README.md), Osmosis schema
 * [DuckDB+Spatial / QuackOSM](backends/duckdb_quackosm/README.md), Quackosm schema
+* [Postgres+PostGIS / Osmosis](backends/postgres_osmosis/README.md), Osmosis schema
+* [Postgres+PostGIS / Osm2pgsql](backends/postgres_osm2pgsql/README.md), Osm2pgsql schema using a specific `flex output`
 
 ### Without Docker
 

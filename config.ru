@@ -10,6 +10,8 @@ when 'DuckdbQuackosm'
   require_relative 'backends/duckdb_quackosm/duckdb_quackosm'
 when 'PostgresOsmosis'
   require_relative 'backends/postgres_osmosis/postgres_osmosis'
+when 'PostgresOsm2pgsql'
+  require_relative 'backends/postgres_osm2pgsql/postgres_osm2pgsql'
 end
 
 class App < Hanami::API
