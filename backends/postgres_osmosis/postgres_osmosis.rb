@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'pg'
-require 'overpass_parser/sql_dialect/postgres'
 
 class PostgresOsmosis
   def initialize
@@ -11,7 +10,7 @@ class PostgresOsmosis
   end
 
   def exec(query)
-    request = OverpassParser.parse(query)
+    request = OverpassParserRuby.parse(query)
     sql = request.to_sql(
       @dialect,
       4326,

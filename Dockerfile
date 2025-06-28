@@ -3,8 +3,13 @@ FROM ruby:3.3-alpine
 RUN apk add --no-cache --virtual \
         build-dependencies \
         build-base \
+        cargo \
+        clang17-libclang \
+        clang-dev \
+        curl \
         git \
         ruby-dev \
+        rust \
         postgresql-dev \
         yaml-dev
 

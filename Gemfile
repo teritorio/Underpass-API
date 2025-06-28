@@ -10,7 +10,7 @@ gem 'puma', '~> 6.0'
 gem 'hanami-api'
 
 # gem 'duckdb'
-gem 'overpass_parser', git: 'https://github.com/teritorio/overpass_parser-rb.git'
+gem 'overpass_parser_ruby', git: 'https://github.com/teritorio/overpass_parser_ruby'
 gem 'pg'
 gem 'sorbet-runtime'
 

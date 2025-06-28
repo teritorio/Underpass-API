@@ -2,7 +2,7 @@
 
 require 'bundler/setup'
 require 'hanami/api'
-require 'overpass_parser'
+require 'overpass_parser_ruby'
 require 'json'
 
 case ENV['BACKEND']
@@ -15,7 +15,7 @@ end
 class App < Hanami::API
   def initialize
     super
-    @@backend = Object::const_get(ENV['BACKEND']).new
+    @@backend = Object.const_get(ENV['BACKEND']).new
   end
 
   helpers do
@@ -37,12 +37,12 @@ class App < Hanami::API
         headers['Access-Control-Allow-Origin'] = '*'
         headers['Content-Type'] = 'application/json'
         body(json)
-      rescue OverpassParser::ParsingError => e
+      rescue OverpassParserRuby::ParsingError => e
         headers['Access-Control-Allow-Origin'] = '*'
         headers['Content-Type'] = 'text/html'
         body("<html>
   <body>
-  <p><strong style=\"color:#FF0000\">Error</strong>: #{e}</p>
+  <p><strong style=\"color:#FF0000\">Error</strong>: <pre>#{e}</pre></p>
   </body>
   </html>")
       end

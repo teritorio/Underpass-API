@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'duckdb'
-require 'overpass_parser/sql_dialect/duckdb'
 
 class DuckdbQuackosm
   def initialize
@@ -10,11 +9,11 @@ class DuckdbQuackosm
     @@con = db.connect
     @@con.query(File.read(File.dirname(__FILE__) + '/view.sql').gsub('#{parquet}', parquet))
 
-    @dialect = OverpassParser::SqlDialect::Duckdb.new
+    @dialect = 'duckdb'
   end
 
   def exec(query)
-    request = OverpassParser.parse(query)
+    request = OverpassParserRuby.parse(query)
     sql = request.to_sql(@dialect, 4326)
     result = @@con.query(sql)
     [sql, result.collect(&:first)]
