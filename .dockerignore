@@ -1,0 +1,6 @@
+.vscode
+target
+data
+pkg
+*.parquet
+*.osm.pbf

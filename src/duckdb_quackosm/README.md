@@ -13,7 +13,7 @@ docker compose run --rm quackosm
 
 ```sh
 quackosm /data/landes-latest.osm.pbf
-mv files/landes-latest_nofilter_noclip_compact.parquet /data/extract_nofilter_noclip_compact.parquet
+mv files/landes-latest_nofilter_noclip_compact_sorted.parquet /data/extract_nofilter_noclip_compact.parquet
 ```
 
 ## Run the server

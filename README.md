@@ -1,27 +1,26 @@
 # Underpass-API
 
-An Overpass-API on SQL Database.
+An Overpass-API compatible engine on SQL Databases.
 
-Underpass-API aim to be a [Overpass-API](https://github.com/drolbr/Overpass-API) compatible engine built upon [converter](https://github.com/teritorio/overpass_parser-rb) from Overpass Language to SQL.
+Underpass-API aim to be a [Overpass-API](https://github.com/drolbr/Overpass-API) compatible engine built upon [overpass_parser_rust](https://github.com/teritorio/overpass_parser_rust) to parse Overpass Query an converto to SQL.
+
+Alternatively WASM version, without requering backend is also available in [underpass-wasm](./underpass-wasm).
 
 ## Prepare the data & Run the server
 
 ### With docker (recommended)
 
 Follow the instruction of one of the backends:
-* [Postgres+PostGIS / Osmosis](backends/postgres_osmosis/README.md), Osmosis schema
-* [DuckDB+Spatial / QuackOSM](backends/duckdb_quackosm/README.md), Quackosm schema
+* [Postgres+PostGIS / Osmosis](src/postgres_osmosis/README.md), Osmosis schema
+* [DuckDB+Spatial / QuackOSM](src/duckdb_quackosm/README.md), Quackosm schema
 
 ### Without Docker
 
-It is possible to use Underpass-API without Docker with the following instructions :
+It is possible to setup Underpass-API without Docker. Looks at specific backend directory, and use Dockerfile content as installation guide.
 
-* Install Ruby dependencies with `bundle install`.
-* Start the server with
-  * `BACKEND="DuckdbQuackosm" DB="data/database.parquet" bundle exec rackup`
-  * `BACKEND="PostgresOsmosis" DB="postgresql://user:pw@host:5432/database" bundle exec rackup`
-
-Fo details about setup, looks at specific backend directory, and in Dockerfile for system dependencies.
+Start the server with
+* `BACKEND="DuckdbQuackosm" DB="data/database.parquet" cargo run`
+* `BACKEND="PostgresOsmosis" DB="postgresql://user:pw@host:5432/database" cargo run`
 
 ## Query
 

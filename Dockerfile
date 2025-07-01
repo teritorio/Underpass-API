@@ -1,24 +1,21 @@
-FROM ruby:3.3-alpine
+# Build stage
+FROM rust:1.88.0-slim-bullseye AS builder
 
-RUN apk add --no-cache --virtual \
-        build-dependencies \
-        build-base \
-        cargo \
-        clang17-libclang \
-        clang-dev \
-        curl \
-        git \
-        ruby-dev \
-        rust \
-        postgresql-dev \
-        yaml-dev
+WORKDIR /usr/src/underpass-api
+COPY Cargo.toml Cargo.lock ./
+RUN mkdir src && echo "fn main() {}" > src/main.rs
+RUN cargo build --release && rm -rf src
 
-WORKDIR /srv/app
+COPY src ./src
+RUN cargo build --release --no-default-features --features "postgres" && \
+    cp target/release/underpass-api /usr/local/bin/
 
-ADD Gemfile Gemfile.lock ./
-RUN bundle config --global silence_root_warning 1
-RUN bundle install
+# Runtime stage
+FROM rust:1.88.0-slim-bullseye AS runtime
 
-ADD . ./
+COPY --from=builder /usr/local/bin/underpass-api /usr/local/bin/underpass-api
 
-EXPOSE 9000
+WORKDIR /usr/src/underpass-api
+COPY src ./src
+
+CMD ["underpass-api"]

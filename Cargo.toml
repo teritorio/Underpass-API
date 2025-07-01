@@ -1,0 +1,26 @@
+[package]
+name = "underpass-api"
+version = "0.1.0"
+edition = "2024"
+
+authors = ["Frédéric Rodrigo <fred.rodrigo@gmail.com>"]
+description = "An Overpass-API on SQL Database."
+license = "MIT/Apache-2.0"
+repository = "https://github.com/teritorio/Underpass-API"
+
+[features]
+default = ["duckdb", "postgres"]
+duckdb = ["dep:duckdb"]
+postgres = ["dep:tokio-postgres"]
+
+[dependencies]
+axum = { version = "0.8.4", features = ["macros", "multipart"] }
+tokio = { version = "1.45.1", features = ["macros", "rt-multi-thread"] }
+overpass_parser_rust = { git = "https://github.com/teritorio/overpass_parser_rust", branch = "master" }
+duckdb = { version = "1.3.1",  optional = true }
+tower-http = { version = "0.6.6", features = ["cors", "trace"] }
+tower = "0.5.2"
+serde = { version = "1.0.219", eatures = ["derive"], features = ["derive"] }
+serde_json = "1.0.140"
+tracing = "0.1.41"
+tokio-postgres = { version = "0.7.13", features = ["with-serde_json-1"], optional = true }

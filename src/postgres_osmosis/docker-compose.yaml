@@ -1,5 +1,3 @@
-version: "3.3"
-
 services:
   osmosis:
     profiles: [tools]
@@ -29,9 +27,7 @@ services:
       service: api
     environment:
       BACKEND: PostgresOsmosis
-      DATABASE_URL: postgresql://postgres@postgres:5432/postgres
-    volumes:
-      - .:/srv/app/backends/postgres_osmosis
+      DB: postgresql://postgres@postgres:5432/postgres
     depends_on:
       - postgres
 

@@ -12,8 +12,8 @@ docker compose run --rm osmosis
 ```
 
 ```sh
-psql $DATABASE_URL -v ON_ERROR_STOP=1 -c "CREATE EXTENSION hstore;"
-psql $DATABASE_URL -v ON_ERROR_STOP=1 -c "CREATE EXTENSION postgis;"
+psql $DATABASE_URL -v ON_ERROR_STOP=1 -c "CREATE EXTENSION IF NOT EXISTS hstore;"
+psql $DATABASE_URL -v ON_ERROR_STOP=1 -c "CREATE EXTENSION IF NOT EXISTS postgis;"
 cat /usr/share/doc/osmosis/examples/pgsnapshot_schema_0.6.sql | psql $DATABASE_URL -v ON_ERROR_STOP=1
 cat /usr/share/doc/osmosis/examples/pgsnapshot_schema_0.6_linestring.sql | psql $DATABASE_URL -v ON_ERROR_STOP=1
 osmosis \
