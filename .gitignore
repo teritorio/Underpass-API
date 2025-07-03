@@ -1,5 +1,8 @@
 target
 .vscode
+underpass-wasm/dist
+underpass-wasm/pkg
+underpass-wasm/node_modules
 data
 *.parquet
 *.osm.pbf

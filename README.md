@@ -43,13 +43,15 @@ out center meta;
 
 time curl 'http://localhost:9292/interpreter' -X POST -H 'Content-Type: application/x-www-form-urlencoded; charset=UTF-8' --data-raw 'data=%5Bout%3Ajson%5D%5Btimeout%3A25%5D%3B%0A(%0A++nwr%5Bhighway%3Dbus_stop%5D%5Bname%5D%3B%0A++nwr%5Bpublic_transport%3Dplatform%5D%3B%0A)%3B%0Aout+center+meta%3B'
 
-| Backend                          | Setup  | Query 1 |
-|----------------------------------|--------|---------|
-| Postgres+PostGIS / Osmosis       | 10m11s |    5,7s |
-| DuckDB+Spatial / QuackOSM (1)    |  2m00s |    2,4s |
-| Overpass API (2)                 |  8m49s |    3,1s |
-| Overpass API overpass-api.de (3) |      - |    5,9s |
+| Backend                                    | Setup  | Query 1 |
+|--------------------------------------------|--------|---------|
+| Postgres+PostGIS / Osmosis                 | 10m11s |    5,7s |
+| DuckDB+Spatial / QuackOSM (1)              |  2m00s |    2,4s |
+| DuckDB+Spatial / QuackOSM / WASM (1, 2)    |  2m00s |    8,0s |
+| Overpass API (3)                           |  8m49s |    3,1s |
+| Overpass API overpass-api.de (4)           |      - |    5,9s |
 
 (1) Without metadata.
-(2) Required converion from PBF to XML included ().
-(3) Query with polygon to limit the spatial extent.
+(2) With local Parquet file
+(3) Required converion from PBF to XML included ().
+(4) Query with polygon to limit the spatial extent.

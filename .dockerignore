@@ -1,4 +1,7 @@
 .vscode
+underpass-wasm/dist
+underpass-wasm/pkg
+underpass-wasm/node_modules
 target
 data
 pkg

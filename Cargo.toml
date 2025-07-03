@@ -13,6 +13,12 @@ default = ["duckdb", "postgres"]
 duckdb = ["dep:duckdb"]
 postgres = ["dep:tokio-postgres"]
 
+[workspace]
+members = [
+    ".",
+    "underpass-wasm",
+]
+
 [dependencies]
 axum = { version = "0.8.4", features = ["macros", "multipart"] }
 tokio = { version = "1.45.1", features = ["macros", "rt-multi-thread"] }

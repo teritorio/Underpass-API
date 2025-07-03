@@ -1,0 +1,40 @@
+{
+  "name": "underpass",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "./dist/underpass.umd.js",
+  "module": "./dist/underpass.es.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/underpass.es.js",
+      "require": "./dist/underpass.umd.js"
+    }
+  },
+  "files": [
+    "dist",
+    "pkg"
+  ],
+  "scripts": {
+    "build:wasm": "wasm-pack build --target web --out-dir ./pkg",
+    "build:lib": "vite build",
+    "build": "yarn build:wasm && yarn build:lib",
+    "dev": "vite",
+    "preview": "vite preview",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.10",
+    "@typescript-eslint/eslint-plugin": "^8.35.1",
+    "@typescript-eslint/parser": "^8.35.1",
+    "eslint": "^9.30.1",
+    "typescript": "^5.8.3",
+    "vite": "^7.0.0",
+    "vite-plugin-dts": "^4.5.4"
+  },
+  "packageManager": "yarn@1.22.22+sha1.ac34549e6aa8e7ead463a7407e1c7390f61a6610",
+  "dependencies": {
+    "@duckdb/duckdb-wasm": "^1.29.1-dev132.0"
+  }
+}

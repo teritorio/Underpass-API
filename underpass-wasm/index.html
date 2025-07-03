@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Underpass WASM Demo</title>
+</head>
+
+<body>
+  <h1>Underpass WASM</h1>
+
+  <p>Underpass as Overpass Query converter to SQL</p>
+
+  <p>Underpass WASM is an engin able to execute (part of) Overpass Query without the need of an Overpass-API server.
+    Using an in browser WASM Overpass Query converter to SQL and a WASM DuckDB/QuackOSM data base relying on a remote
+    static Parquet file produced using QuackOSM.</p>
+
+  <h2>Demo</h2>
+  <form>
+    <label for="parquet">QuackOSM Parquet file URL</label></br>
+    <input type="text" id="parquet" name="parquet" size="60"
+      value="http://localhost:5173/extract_nofilter_noclip_compact.parquet" /><br>
+
+    <label for="overpass-query">Overpass Query</label></br>
+    <textarea id="overpass-query" rows="10" cols="60" placeholder="Enter your Overpass query here">
+[out:json][timeout:25];
+(
+  nwr[highway=bus_stop][name];
+  nwr[public_transport=platform];
+);
+out center meta;
+    </textarea></br>
+
+    <button id="submit-query" type="submit">Run with Underpass</button>
+  </form>
+
+  <pre id="log"></pre>
+
+  <script type="module">
+    import { query } from './src/dev.ts';
+
+    document.getElementById('submit-query').addEventListener('click', async (event) => {
+      event.preventDefault(); // Prevent form submission
+
+      const parquetUrl = document.getElementById('parquet').value;
+      const overpassQuery = document.getElementById('overpass-query').value;
+
+      if (!parquetUrl || !overpassQuery) {
+        alert('Please provide both Parquet file URL and Overpass Query.');
+        return;
+      }
+
+      try {
+        document.getElementById('log').innerHTML = "";
+        query(parquetUrl, overpassQuery, document.getElementById('log'));
+      } catch (error) {
+        console.error('Error running Overpass Query:', error);
+        alert('An error occurred while running the query. Check the console for details.');
+      }
+    });
+  </script>
+</body>
+
+</html>

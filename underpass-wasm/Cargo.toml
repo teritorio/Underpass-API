@@ -1,0 +1,17 @@
+[package]
+name = "underpass"
+version = "0.1.0"
+edition = "2024"
+
+authors = ["Frédéric Rodrigo <fred.rodrigo@gmail.com>"]
+description = "An Overpass-API on SQL Database."
+license = "MIT/Apache-2.0"
+repository = "https://github.com/teritorio/Underpass-API"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+overpass_parser_rust = { git = "https://github.com/teritorio/overpass_parser_rust", branch = "master" }
+wasm-bindgen = "0.2.100"
+wasm-bindgen-futures = "0.4.50"

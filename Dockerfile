@@ -2,8 +2,10 @@
 FROM rust:1.88.0-slim-bullseye AS builder
 
 WORKDIR /usr/src/underpass-api
+RUN mkdir src && echo "fn main() {}" > src/main.rs && \
+    mkdir -p underpass-wasm/src && echo "fn main() {}" > underpass-wasm/src/lib.rs
 COPY Cargo.toml Cargo.lock ./
-RUN mkdir src && echo "fn main() {}" > src/main.rs
+COPY underpass-wasm/Cargo.toml ./underpass-wasm/Cargo.toml
 RUN cargo build --release && rm -rf src
 
 COPY src ./src
