@@ -1,8 +1,28 @@
-# Build stage
-FROM rust:1.88.0-slim-bullseye AS builder
+FROM archlinux:base AS builder
 
-RUN apt update && apt install -y \
-        build-essential
+RUN pacman -Sy && pacman -S --noconfirm \
+    base-devel \
+    git \
+    rust \
+    cargo
+
+# Install yay
+RUN useradd -m build
+USER build
+RUN cd /tmp/ && \
+    git clone https://aur.archlinux.org/yay-bin.git && \
+    cd yay-bin && \
+    makepkg
+USER root
+RUN pacman -U --noconfirm /tmp/yay-bin/*.pkg.tar.zst
+USER build
+# Install duckdb from yay
+RUN cd /tmp && \
+    yay -G --noconfirm aur/duckdb-bin && \
+    cd duckdb-bin && \
+    makepkg
+USER root
+RUN pacman -U --noconfirm /tmp/duckdb-bin/*.pkg.tar.zst
 
 WORKDIR /usr/src/underpass-api
 RUN mkdir src && echo "fn main() {}" > src/main.rs && \
@@ -16,7 +36,10 @@ RUN cargo build --release && \
     cp target/release/underpass-api /usr/local/bin/
 
 # Runtime stage
-FROM rust:1.88.0-slim-bullseye AS runtime
+FROM archlinux:base AS runtime
+
+COPY --from=builder /tmp/duckdb-bin/*.pkg.tar.zst /tmp/duckdb-bin/
+RUN pacman -U --noconfirm /tmp/duckdb-bin/*.pkg.tar.zst
 
 COPY --from=builder /usr/local/bin/underpass-api /usr/local/bin/underpass-api
 
