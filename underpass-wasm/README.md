@@ -25,6 +25,14 @@ Underpass.getConnection('http://localhost:5173/extract_nofilter_noclip_compact.p
 });
 ```
 
+## Dev
+
+Build
+```
+yarn build
+yarn dev
+```
+
 ## Licence
 
 Teritorio, Frédéric Rodrigo, 2025, AGPL.

@@ -23,42 +23,37 @@ class Connection {
     this.status = status;
   }
 
-  async query(
-    overpass: string,
-    row_callback: (object: Object) => void
-  ) {
-    underpass.query(overpass).then(sql => {
-      this.status(`Parsing Overpass query\n${overpass}`);
+  async query(overpass: string): Promise<IterableIterator<Object>> {
+    const sql = await underpass.query(overpass)
+    this.status(`Parsing Overpass query\n${overpass}`);
 
-      console.log('Query Result:', sql);
+    this.status(`SQL query\n${sql}`);
+    const startTimeS = performance.now();
+    const result = await this.connection.query(sql);
+    const endTimeS = performance.now();
+    this.status(`Execution of SQL query in ${endTimeS - startTimeS}ms`);
 
-      this.status(`SQL query\n${sql}`);
-      const startTimeS = performance.now();
-      this.connection.query(sql).then(result => {
-        const endTimeS = performance.now();
-        this.status(`Execution of SQL query in ${endTimeS - startTimeS}ms`);
+    const self = this;
+    function* yieldResults(): IterableIterator<Object> {
+      self.status('Fetching results');
+      const startTimeR = performance.now();
+      let count = 0;
+      for (const row of result) {
+        yield JSON.parse(row.toArray()[0]);
+        count += 1;
+      }
+      const endTimeR = performance.now();
+      self.status(`Fetched ${count} results in ${endTimeR - startTimeR}ms`);
+    }
 
-        this.status('Fetching results');
-        const startTimeR = performance.now();
-        let count = 0;
-        for (const row of result) {
-          row_callback(JSON.parse(row.toArray()[0]));
-          count += 1;
-        }
-        const endTimeR = performance.now();
-        this.status(`Fetched ${count} results in ${endTimeR - startTimeR}ms`);
-      });
-    }).catch(error => {
-      console.error('Error executing query:', error);
-    });
+    return yieldResults();
   }
 }
 
 async function getConnection(
   quackosm_parquet: string,
-  callback: (connection: Connection) => void,
   status: (log: string) => void,
-) {
+): Promise<Connection> {
   const MANUAL_BUNDLES: duckdb.DuckDBBundles = {
     mvp: {
       mainModule: duckdb_wasm,
@@ -82,12 +77,12 @@ async function getConnection(
   await init();
   status('DuckDB-wasm initialized');
 
-  db.connect().then(async (connection) => {
+  return db.connect().then(async (connection) => {
     const sql = underpass.prepare(quackosm_parquet);
-    connection.query(sql).then(_ => {
+    return connection.query(sql).then(_ => {
       status(`DuckDB-wasm configured to ${quackosm_parquet}`);
 
-      callback(new Connection(connection, status));
+      return Promise.resolve(new Connection(connection, status));
     });
   });
 }

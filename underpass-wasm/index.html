@@ -50,12 +50,21 @@ out center meta;
         return;
       }
 
+      const log = document.getElementById('log');
+      const logger = (status) => {
+        const p = document.createElement('div');
+        p.textContent = status;
+        log.appendChild(p);
+      };
+
       try {
         document.getElementById('log').innerHTML = "";
-        query(parquetUrl, overpassQuery, document.getElementById('log'));
+        const results = await query(parquetUrl, overpassQuery, logger);
+        for (const result of results) {
+          logger(JSON.stringify(result));
+        }
       } catch (error) {
-        console.error('Error running Overpass Query:', error);
-        alert('An error occurred while running the query. Check the console for details.');
+        logger(error);
       }
     });
   </script>
