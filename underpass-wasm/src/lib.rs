@@ -33,7 +33,7 @@ pub fn prepare(parquet: &str) -> String {
 pub async fn query(query: &str) -> Result<String, String> {
     match parse_query(query) {
         Ok(request) => Ok(request.to_sql(
-            &(Box::new(Duckdb) as Box<dyn SqlDialect + Send + Sync>),
+            &Duckdb as &(dyn SqlDialect + Send + Sync),
             "4326",
             None,
         )),

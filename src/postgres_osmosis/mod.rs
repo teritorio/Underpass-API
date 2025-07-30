@@ -77,7 +77,7 @@ GROUP BY
     results.geom,
     results.osm_type
 ";
-                Ok(request.to_sql(&self.dialect, "4326", Some(finalizer)))
+                Ok(request.to_sql(&*self.dialect, "4326", Some(finalizer)))
             }
         }
     }

@@ -34,7 +34,7 @@ impl Backend for DuckdbQuackosm {
 
     fn parse_query(&self, query: &str) -> Result<String, String> {
         match parse_query(query) {
-            Ok(request) => Ok(request.to_sql(&self.dialect, "4326", None)),
+            Ok(request) => Ok(request.to_sql(&*self.dialect, "4326", None)),
             Err(e) => Err(e.to_string()),
         }
     }
