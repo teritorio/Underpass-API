@@ -26,7 +26,7 @@ overpass_parser_rust = { git = "https://github.com/teritorio/overpass_parser_rus
 duckdb = { version = "1.3.1", optional = true }
 tower-http = { version = "0.6.6", features = ["cors", "trace"] }
 tower = "0.5.2"
-serde = { version = "1.0.219", eatures = ["derive"], features = ["derive"] }
+serde = { version = "1.0.219", features = ["derive"] }
 serde_json = "1.0.140"
 tracing = "0.1.41"
 tokio-postgres = { version = "0.7.13", features = ["with-serde_json-1"], optional = true }
