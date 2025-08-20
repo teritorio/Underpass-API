@@ -12,6 +12,6 @@ services:
       service: api
     environment:
       BACKEND: DuckdbQuackosm
-      DB: /data/extract_nofilter_noclip_compact.parquet
+      DB: /data/landes-latest_nofilter_noclip_compact.parquet
     volumes:
       - ../../data:/data

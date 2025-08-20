@@ -1,5 +1,3 @@
-use std::env;
-
 use duckdb::Connection;
 use overpass_parser_rust::{
     overpass_parser::parse_query,
@@ -9,6 +7,7 @@ use overpass_parser_rust::{
 use crate::backend::Backend;
 
 pub struct DuckdbQuackosm {
+    parquet: String,
     dialect: Box<dyn SqlDialect + Send + Sync>,
     con: Connection,
 }
@@ -30,6 +29,7 @@ impl DuckdbQuackosm {
         }
 
         DuckdbQuackosm {
+            parquet: parquet.to_string(),
             dialect: Box::new(Duckdb),
             con,
         }
@@ -42,10 +42,11 @@ impl Backend for DuckdbQuackosm {
     }
 
     async fn init(&self) -> () {
-        let args: Vec<String> = env::args().collect();
-        let parquet = args.get(2).expect("Usage: [init] <parquet_file>");
-
-        Self::exec_sql_file(&self.con, "src/duckdb_quackosm/init.sql", parquet);
+        Self::exec_sql_file(
+            &self.con,
+            "src/duckdb_quackosm/init.sql",
+            self.parquet.as_str(),
+        );
     }
 
     fn parse_query(&self, query: &str) -> Result<String, String> {

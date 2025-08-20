@@ -32,7 +32,8 @@ COPY underpass-wasm/Cargo.toml ./underpass-wasm/Cargo.toml
 RUN cargo build --release && rm -rf src
 
 COPY src ./src
-RUN cargo build --release && \
+RUN touch src/main.rs && \
+    cargo build --release && \
     cp target/release/underpass-api /usr/local/bin/
 
 # Runtime stage
@@ -41,9 +42,12 @@ FROM archlinux:base AS runtime
 COPY --from=builder /tmp/duckdb-bin/*.pkg.tar.zst /tmp/duckdb-bin/
 RUN pacman -U --noconfirm /tmp/duckdb-bin/*.pkg.tar.zst
 
+RUN curl https://extensions.duckdb.org/v1.3.2/linux_amd64/spatial.duckdb_extension.gz > /tmp/spatial.duckdb_extension.gz && \
+    duckdb -c "INSTALL '/tmp/spatial.duckdb_extension.gz';"
+
 COPY --from=builder /usr/local/bin/underpass-api /usr/local/bin/underpass-api
 
 WORKDIR /usr/src/underpass-api
 COPY src ./src
 
-CMD ["underpass-api"]
+CMD ["underpass-api", "serve"]
