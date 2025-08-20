@@ -16,20 +16,6 @@ SELECT split_part(feature_id, '/', 2)::bigint AS id, NULL::int AS version, NULL:
 CREATE OR REPLACE TEMP VIEW area_by_geom AS
 SELECT split_part(feature_id, '/', 2)::bigint + CASE feature_id[1] WHEN 'r' THEN 3600000000 ELSE 0 END AS id, NULL::int AS version, NULL::timestamp AS created, NULL::int AS changeset, NULL::int AS uid, tags, NULL::bigint[] AS nodes, NULL::json AS members, geometry AS geom, CASE feature_id[1] WHEN 'w' THEN 'w' ELSE 'a' END AS osm_type FROM '#{parquet}' wHERE feature_id > 'm' AND list_contains(['POLYGON', 'MULTIPOLYGON'], ST_GeometryType(geometry));
 
-DROP TABLE IF EXISTS by_id_table;
-CREATE TEMP TABLE by_id_table AS
-SELECT
-    *
-FROM (
-    SELECT 'n' AS osm_type, id, NULL::bigint[] AS nodes, tags, geom FROM node_by_geom
-    UNION ALL
-    SELECT 'w' AS osm_type, id, nodes, tags, geom FROM way_by_geom
-    UNION ALL
-    SELECT 'r' AS osm_type, id, NULL::bigint[] AS nodes, tags, geom FROM relation_by_geom
-) AS t
-ORDER BY
-    osm_type,
-    id
-;
-
-COPY by_id_table TO '#{parquet}_by_id' (FORMAT PARQUET);
+COPY (SELECT id, tags, geom FROM node_by_geom ORDER BY id) TO '#{parquet}_nodes_by_id' (FORMAT PARQUET);
+COPY (SELECT id, nodes, tags, geom FROM way_by_geom) TO '#{parquet}_ways_by_id' (FORMAT PARQUET);
+COPY (SELECT id, NULL::bigint[] AS nodes, tags, geom FROM relation_by_geom) TO '#{parquet}_relations_by_id' (FORMAT PARQUET);
