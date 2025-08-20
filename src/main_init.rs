@@ -3,7 +3,7 @@ use futures::executor::block_on;
 use crate::backend::BackendType;
 
 async fn init_async() -> () {
-    let dialect = BackendType::new().await;
+    let dialect = BackendType::new(false).await;
 
     dialect.init().await;
 }

@@ -21,7 +21,7 @@ pub enum BackendType {
 }
 
 impl BackendType {
-    pub async fn new() -> Self {
+    pub async fn new(with_view: bool) -> Self {
         match std::env::var("BACKEND") {
             #[cfg(feature = "postgres")]
             Ok(backend) if backend == "PostgresOsmosis" => BackendType::PostgresOsmosis(
@@ -29,6 +29,7 @@ impl BackendType {
                     std::env::var("DB")
                         .expect("DB env var is required")
                         .as_str(),
+                        with_view,
                 )
                 .await,
             ),
@@ -38,6 +39,7 @@ impl BackendType {
                     std::env::var("DB")
                         .expect("DB env var is required")
                         .as_str(),
+                        with_view,
                 ))
             }
             _ => panic!(

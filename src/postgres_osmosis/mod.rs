@@ -22,7 +22,7 @@ impl PostgresOsmosis {
         };
     }
 
-    pub async fn new(db: &str) -> PostgresOsmosis {
+    pub async fn new(db: &str, with_view: bool) -> PostgresOsmosis {
         let (con, connection) = tokio_postgres::connect(db, NoTls).await.unwrap();
         tokio::spawn(async move {
             if let Err(e) = connection.await {
@@ -30,7 +30,9 @@ impl PostgresOsmosis {
             }
         });
 
-        Self::exec_sql_file(&con, "src/postgres_osmosis/init.sql").await;
+        if with_view {
+            Self::exec_sql_file(&con, "src/postgres_osmosis/view.sql").await;
+        }
 
         // TODO @dialect = OverpassParser::SqlDialect::Postgres.new(postgres_escape_literal: ->(s) { @@con.escape_literal(s) })
         PostgresOsmosis {

@@ -1,3 +1,5 @@
+use std::env;
+
 use duckdb::Connection;
 use overpass_parser_rust::{
     overpass_parser::parse_query,
@@ -14,16 +16,18 @@ pub struct DuckdbQuackosm {
 impl DuckdbQuackosm {
     fn exec_sql_file(con: &Connection, file_path: &str, parquet: &str) {
         let sql = std::fs::read_to_string(file_path)
-            .expect("Failed to read view.sql file")
+            .expect(format!("Failed to read {file_path}").as_str())
             .replace("#{parquet}", parquet);
         con.execute_batch(&sql)
-            .expect("Failed to create view from parquet file");
+            .expect(format!("Failed to execute sql from file {file_path}").as_str());
     }
 
-    pub fn new(parquet: &str) -> DuckdbQuackosm {
+    pub fn new(parquet: &str, with_view: bool) -> DuckdbQuackosm {
         let con = Connection::open_in_memory().expect("Failed to connect to DuckDB database");
 
-        Self::exec_sql_file(&con, "src/duckdb_quackosm/view.sql", parquet);
+        if with_view {
+            Self::exec_sql_file(&con, "src/duckdb_quackosm/view.sql", parquet);
+        }
 
         DuckdbQuackosm {
             dialect: Box::new(Duckdb),
@@ -37,7 +41,12 @@ impl Backend for DuckdbQuackosm {
         "duckdb_quackosm".to_string()
     }
 
-    async fn init(&self) -> () {}
+    async fn init(&self) -> () {
+        let args: Vec<String> = env::args().collect();
+        let parquet = args.get(2).expect("Usage: [init] <parquet_file>");
+
+        Self::exec_sql_file(&self.con, "src/duckdb_quackosm/init.sql", parquet);
+    }
 
     fn parse_query(&self, query: &str) -> Result<String, String> {
         match parse_query(query) {

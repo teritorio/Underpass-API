@@ -33,7 +33,7 @@ async fn uri_middleware(request: Request<Body>, next: Next) -> Response {
 
 #[tokio::main]
 async fn serve_async() -> () {
-    let dialect = BackendType::new().await;
+    let dialect = BackendType::new(true).await;
 
     let cors_layer = CorsLayer::new()
         .allow_origin(Any) // Open access to selected route
