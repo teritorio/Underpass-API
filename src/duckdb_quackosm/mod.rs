@@ -12,13 +12,18 @@ pub struct DuckdbQuackosm {
 }
 
 impl DuckdbQuackosm {
-    pub fn new(parquet: &str) -> DuckdbQuackosm {
-        let con = Connection::open_in_memory().expect("Failed to connect to DuckDB database");
-        let sql = std::fs::read_to_string("src/duckdb_quackosm/view.sql")
+    fn exec_sql_file(con: &Connection, file_path: &str, parquet: &str) {
+        let sql = std::fs::read_to_string(file_path)
             .expect("Failed to read view.sql file")
             .replace("#{parquet}", parquet);
         con.execute_batch(&sql)
             .expect("Failed to create view from parquet file");
+    }
+
+    pub fn new(parquet: &str) -> DuckdbQuackosm {
+        let con = Connection::open_in_memory().expect("Failed to connect to DuckDB database");
+
+        Self::exec_sql_file(&con, "src/duckdb_quackosm/view.sql", parquet);
 
         DuckdbQuackosm {
             dialect: Box::new(Duckdb),
@@ -31,6 +36,8 @@ impl Backend for DuckdbQuackosm {
     fn name(&self) -> String {
         "duckdb_quackosm".to_string()
     }
+
+    async fn init(&self) -> () {}
 
     fn parse_query(&self, query: &str) -> Result<String, String> {
         match parse_query(query) {

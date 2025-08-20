@@ -13,20 +13,24 @@ pub struct PostgresOsmosis {
 }
 
 impl PostgresOsmosis {
-    pub async fn new(db: &str) -> PostgresOsmosis {
-        let sql = std::fs::read_to_string("src/postgres_osmosis/view.sql")
-            .expect("Failed to read view.sql file");
+    async fn exec_sql_file(con: &Client, file_path: &str) {
+        let sql = std::fs::read_to_string(file_path).expect("Failed to read {file_path} file");
 
+        match con.batch_execute(&sql).await {
+            Ok(_) => {}
+            Err(e) => panic!("Failed to execute {file_path}: {e}"),
+        };
+    }
+
+    pub async fn new(db: &str) -> PostgresOsmosis {
         let (con, connection) = tokio_postgres::connect(db, NoTls).await.unwrap();
         tokio::spawn(async move {
             if let Err(e) = connection.await {
                 panic!("Connection error: {e}");
             }
         });
-        match con.batch_execute(&sql).await {
-            Ok(_) => {}
-            Err(e) => panic!("Failed to create view: {e}"),
-        };
+
+        Self::exec_sql_file(&con, "src/postgres_osmosis/init.sql").await;
 
         // TODO @dialect = OverpassParser::SqlDialect::Postgres.new(postgres_escape_literal: ->(s) { @@con.escape_literal(s) })
         PostgresOsmosis {
@@ -39,6 +43,10 @@ impl PostgresOsmosis {
 impl Backend for PostgresOsmosis {
     fn name(&self) -> String {
         "postgres_osmosis".to_string()
+    }
+
+    async fn init(&self) -> () {
+        Self::exec_sql_file(&self.con, "src/postgres_osmosis/init.sql").await;
     }
 
     fn parse_query(&self, query: &str) -> Result<String, String> {

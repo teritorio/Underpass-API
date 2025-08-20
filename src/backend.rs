@@ -6,6 +6,8 @@ use crate::postgres_osmosis;
 pub trait Backend {
     fn name(&self) -> String;
 
+    async fn init(&self) -> ();
+
     fn parse_query(&self, query: &str) -> Result<String, String>;
 
     async fn exec(&mut self, query: String) -> Vec<String>;
@@ -56,6 +58,15 @@ impl BackendType {
             BackendType::PostgresOsmosis(backend) => backend.name(),
             #[cfg(feature = "duckdb")]
             BackendType::DuckdbQuackosm(backend) => backend.name(),
+        }
+    }
+
+    pub async fn init(&self) -> () {
+        match self {
+            #[cfg(feature = "postgres")]
+            BackendType::PostgresOsmosis(backend) => backend.init().await,
+            #[cfg(feature = "duckdb")]
+            BackendType::DuckdbQuackosm(backend) => backend.init().await,
         }
     }
 

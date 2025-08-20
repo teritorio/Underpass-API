@@ -19,7 +19,10 @@ cat /usr/share/doc/osmosis/examples/pgsnapshot_schema_0.6_linestring.sql | psql 
 osmosis \
   --read-pbf /data/landes-latest.osm.pbf \
   --write-pgsql host=postgres database=postgres user=postgres password=postgres
-cat /backends/init.sql | psql $DATABASE_URL -v ON_ERROR_STOP=1
+```
+
+```sh
+docker compose run -- init
 ```
 
 ## Run the server

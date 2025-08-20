@@ -19,8 +19,8 @@ Follow the instruction of one of the backends:
 It is possible to setup Underpass-API without Docker. Looks at specific backend directory, and use Dockerfile content as installation guide.
 
 Start the server with
-* `BACKEND="DuckdbQuackosm" DB="data/database.parquet" cargo run`
-* `BACKEND="PostgresOsmosis" DB="postgresql://user:pw@host:5432/database" cargo run`
+* `BACKEND="DuckdbQuackosm" DB="data/database.parquet" cargo run -- serve`
+* `BACKEND="PostgresOsmosis" DB="postgresql://user:pw@host:5432/database" cargo run -- serve`
 
 ## Query
 
