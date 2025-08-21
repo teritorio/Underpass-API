@@ -27,7 +27,7 @@ SELECT
         ymin := ST_YMin(geometry),
         xmax := ST_XMax(geometry),
         ymax := ST_YMax(geometry)
-    ) AS geom_bbox
+    ) AS bbox
 FROM
     '#{parquet}'
 WHERE
@@ -52,7 +52,7 @@ SELECT
         ymin := ST_YMin(geometry),
         xmax := ST_XMax(geometry),
         ymax := ST_YMax(geometry)
-    ) AS geom_bbox
+    ) AS bbox
 FROM
     '#{parquet}'
 WHERE
@@ -77,7 +77,7 @@ SELECT
         ymin := ST_YMin(geometry),
         xmax := ST_XMax(geometry),
         ymax := ST_YMax(geometry)
-    ) AS geom_bbox
+    ) AS bbox
 FROM
     '#{parquet}'
 WHERE
@@ -102,7 +102,7 @@ SELECT
         ymin := ST_YMin(geometry),
         xmax := ST_XMax(geometry),
         ymax := ST_YMax(geometry)
-    ) AS geom_bbox
+    ) AS bbox
 FROM
     '#{parquet}'
 WHERE
