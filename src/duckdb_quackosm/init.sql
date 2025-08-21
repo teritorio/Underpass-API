@@ -5,13 +5,7 @@ COPY (
 SELECT
     split_part(feature_id, '/', 2)::bigint AS id,
     tags,
-    geometry AS geom,
-    STRUCT_PACK(
-        xmin := ST_XMin(geometry),
-        ymin := ST_YMin(geometry),
-        xmax := ST_XMax(geometry),
-        ymax := ST_YMax(geometry)
-    ) AS geom_bbox
+    geometry AS geom
 FROM
     '#{parquet}'
 WHERE
@@ -37,13 +31,16 @@ SELECT
 FROM
     '#{parquet}'
 WHERE
-    feature_id[1] = 'w'
+    feature_id[1] = 'w' AND
+    ST_Length_Spheroid(
+        ST_MakeLine(ST_Point(ST_XMin(geometry), ST_YMin(geometry)), ST_Point(ST_XMax(geometry), ST_YMax(geometry)))
+    ) < 1000
 ORDER BY
     ST_Hilbert(
         geometry,
         ST_Extent(ST_MakeEnvelope(-180, -90, 180, 90))
     )
-) TO '#{parquet}_ways_by_geom' (FORMAT PARQUET);
+) TO '#{parquet}_ways_small_by_geom' (FORMAT PARQUET);
 
 COPY (
 SELECT
@@ -59,13 +56,66 @@ SELECT
 FROM
     '#{parquet}'
 WHERE
-    feature_id[1] = 'r'
+    feature_id[1] = 'w' AND
+    ST_Length_Spheroid(
+        ST_MakeLine(ST_Point(ST_XMin(geometry), ST_YMin(geometry)), ST_Point(ST_XMax(geometry), ST_YMax(geometry)))
+    ) >= 1000
 ORDER BY
     ST_Hilbert(
         geometry,
         ST_Extent(ST_MakeEnvelope(-180, -90, 180, 90))
     )
-) TO '#{parquet}_relations_by_geom' (FORMAT PARQUET);
+) TO '#{parquet}_ways_large_by_geom' (FORMAT PARQUET);
+
+COPY (
+SELECT
+    split_part(feature_id, '/', 2)::bigint AS id,
+    tags,
+    geometry AS geom,
+    STRUCT_PACK(
+        xmin := ST_XMin(geometry),
+        ymin := ST_YMin(geometry),
+        xmax := ST_XMax(geometry),
+        ymax := ST_YMax(geometry)
+    ) AS geom_bbox
+FROM
+    '#{parquet}'
+WHERE
+    feature_id[1] = 'r' AND
+    ST_Length_Spheroid(
+        ST_MakeLine(ST_Point(ST_XMin(geometry), ST_YMin(geometry)), ST_Point(ST_XMax(geometry), ST_YMax(geometry)))
+    ) < 1000
+ORDER BY
+    ST_Hilbert(
+        geometry,
+        ST_Extent(ST_MakeEnvelope(-180, -90, 180, 90))
+    )
+) TO '#{parquet}_relations_small_by_geom' (FORMAT PARQUET);
+
+COPY (
+SELECT
+    split_part(feature_id, '/', 2)::bigint AS id,
+    tags,
+    geometry AS geom,
+    STRUCT_PACK(
+        xmin := ST_XMin(geometry),
+        ymin := ST_YMin(geometry),
+        xmax := ST_XMax(geometry),
+        ymax := ST_YMax(geometry)
+    ) AS geom_bbox
+FROM
+    '#{parquet}'
+WHERE
+    feature_id[1] = 'r' AND
+    ST_Length_Spheroid(
+        ST_MakeLine(ST_Point(ST_XMin(geometry), ST_YMin(geometry)), ST_Point(ST_XMax(geometry), ST_YMax(geometry)))
+    ) >= 1000
+ORDER BY
+    ST_Hilbert(
+        geometry,
+        ST_Extent(ST_MakeEnvelope(-180, -90, 180, 90))
+    )
+) TO '#{parquet}_relations_large_by_geom' (FORMAT PARQUET);
 
 CREATE OR REPLACE TEMP VIEW node_by_geom AS
 SELECT split_part(feature_id, '/', 2)::bigint AS id, NULL::int AS version, NULL::timestamp AS created, NULL::int AS changeset, NULL::int AS uid, tags, NULL::bigint[] AS nodes, NULL::json AS members, geometry AS geom, feature_id[1] AS osm_type FROM '#{parquet}' WHERE feature_id < 'o';
