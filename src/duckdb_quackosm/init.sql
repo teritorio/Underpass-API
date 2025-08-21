@@ -5,7 +5,13 @@ COPY (
 SELECT
     split_part(feature_id, '/', 2)::bigint AS id,
     tags,
-    geometry AS geom
+    geometry AS geom,
+    STRUCT_PACK(
+        xmin := ST_XMin(geometry),
+        ymin := ST_YMin(geometry),
+        xmax := ST_XMax(geometry),
+        ymax := ST_YMax(geometry)
+    ) AS bbox
 FROM
     '#{parquet}'
 WHERE

@@ -2,13 +2,7 @@ INSTALL 'spatial';
 LOAD 'spatial';
 
 CREATE OR REPLACE TEMP VIEW node_by_geom AS
-SELECT id, NULL::int AS version, NULL::timestamp AS created, NULL::int AS changeset, NULL::int AS uid, tags, NULL::bigint[] AS nodes, NULL::json AS members, geom,
-    STRUCT_PACK(
-        xmin := ST_X(geom),
-        ymin := ST_Y(geom),
-        xmax := ST_X(geom),
-        ymax := ST_Y(geom)
-    ) AS bbox, 'n' AS osm_type
+SELECT id, NULL::int AS version, NULL::timestamp AS created, NULL::int AS changeset, NULL::int AS uid, tags, NULL::bigint[] AS nodes, NULL::json AS members, geom, bbox, 'n' AS osm_type
 FROM read_parquet('#{parquet}_nodes_by_geom');
 
 CREATE OR REPLACE TEMP VIEW node_by_id AS
