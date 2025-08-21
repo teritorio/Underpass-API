@@ -70,6 +70,7 @@ ORDER BY
 COPY (
 SELECT
     split_part(feature_id, '/', 2)::bigint AS id,
+    split_part(feature_id, '/', 2)::bigint + 3600000000 AS aid, -- Stupid, but it works
     tags,
     geometry AS geom,
     STRUCT_PACK(
@@ -95,6 +96,7 @@ ORDER BY
 COPY (
 SELECT
     split_part(feature_id, '/', 2)::bigint AS id,
+    split_part(feature_id, '/', 2)::bigint + 3600000000 AS aid, -- Stupid, but it works
     tags,
     geometry AS geom,
     STRUCT_PACK(
@@ -134,4 +136,4 @@ SELECT split_part(feature_id, '/', 2)::bigint + CASE feature_id[1] WHEN 'r' THEN
 
 COPY (SELECT id, tags, geom FROM node_by_geom ORDER BY id) TO '#{parquet}_nodes_by_id' (FORMAT PARQUET);
 COPY (SELECT id, tags, geom FROM way_by_geom) TO '#{parquet}_ways_by_id' (FORMAT PARQUET);
-COPY (SELECT id, tags, geom FROM relation_by_geom) TO '#{parquet}_relations_by_id' (FORMAT PARQUET);
+COPY (SELECT id, id + 3600000000 AS aid, tags, geom FROM relation_by_geom) TO '#{parquet}_relations_by_id' (FORMAT PARQUET);
