@@ -2,16 +2,16 @@ INSTALL 'spatial';
 LOAD 'spatial';
 
 CREATE OR REPLACE TEMP VIEW node_by_geom AS
-SELECT id, NULL::int AS version, NULL::timestamp AS created, NULL::int AS changeset, NULL::int AS uid, tags, NULL::bigint[] AS nodes, NULL::json AS members, geom, bbox, 'n' AS osm_type
+SELECT id, NULL as aid, NULL::int AS version, NULL::timestamp AS created, NULL::int AS changeset, NULL::int AS uid, tags, NULL::bigint[] AS nodes, NULL::json AS members, geom, bbox, 'n' AS osm_type
 FROM read_parquet('#{parquet}_nodes_by_geom');
 
 CREATE OR REPLACE TEMP VIEW node_by_id AS
 SELECT id, NULL::int AS version, NULL::timestamp AS created, NULL::int AS changeset, NULL::int AS uid, tags, NULL::bigint[] AS nodes, NULL::json AS members, geom, 'n' AS osm_type FROM read_parquet('#{parquet}_nodes_by_id');
 
 CREATE OR REPLACE TEMP VIEW way_by_geom AS
-SELECT id, NULL::int AS version, NULL::timestamp AS created, NULL::int AS changeset, NULL::int AS uid, tags, NULL::bigint[] AS nodes, NULL::json AS members, geom, bbox, 'w' AS osm_type FROM read_parquet('#{parquet}_ways_small_by_geom')
+SELECT id, id AS aid, NULL::int AS version, NULL::timestamp AS created, NULL::int AS changeset, NULL::int AS uid, tags, NULL::bigint[] AS nodes, NULL::json AS members, geom, bbox, 'w' AS osm_type FROM read_parquet('#{parquet}_ways_small_by_geom')
 UNION ALL
-SELECT id, NULL::int AS version, NULL::timestamp AS created, NULL::int AS changeset, NULL::int AS uid, tags, NULL::bigint[] AS nodes, NULL::json AS members, geom, bbox, 'w' AS osm_type FROM read_parquet('#{parquet}_ways_large_by_geom')
+SELECT id, id AS aid, NULL::int AS version, NULL::timestamp AS created, NULL::int AS changeset, NULL::int AS uid, tags, NULL::bigint[] AS nodes, NULL::json AS members, geom, bbox, 'w' AS osm_type FROM read_parquet('#{parquet}_ways_large_by_geom')
 ;
 
 CREATE OR REPLACE TEMP VIEW way_by_id AS
