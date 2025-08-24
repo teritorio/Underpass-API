@@ -71,10 +71,10 @@ SELECT
 FROM
     {{query}} AS results
     LEFT JOIN users ON
-    users.id = results.user_id
+        users.id = results.user_id
     LEFT JOIN relation_members ON
-    results.osm_type = 'r' AND
-    relation_members.relation_id = results.id
+        results.osm_type = 'r' AND
+        relation_members.relation_id = results.id
 GROUP BY
     results.id,
     results.version,

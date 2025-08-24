@@ -2,9 +2,6 @@ CREATE INDEX nodes_idx_tags ON nodes USING gist(tags) WHERE tags != ''::hstore;
 CREATE INDEX ways_idx_tags ON ways USING gist(tags) WHERE tags != ''::hstore;
 CREATE INDEX relations_idx_tags ON relations USING gist(tags) WHERE tags != ''::hstore;
 
-CREATE INDEX ways_idx_geom ON nodes USING gist(geom);
-CREATE INDEX ways_idx_linestring ON ways USING gist(linestring);
-
 DO $$
 DECLARE
     mp RECORD;
@@ -31,7 +28,7 @@ BEGIN
             LEFT JOIN ways ON
                 ways.id = relation_members.member_id
         WHERE
-            relations.tags->'type' = 'multipolygon'
+            relations.tags->'type' IN ('multipolygon', 'boundary')
         GROUP BY
             relations.id
         HAVING

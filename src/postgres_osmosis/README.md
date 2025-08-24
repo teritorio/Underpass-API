@@ -22,7 +22,7 @@ osmosis \
 ```
 
 ```sh
-docker compose run -- init
+docker compose run --rm api underpass-api init
 ```
 
 ## Run the server
