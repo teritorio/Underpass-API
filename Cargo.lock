@@ -1286,7 +1286,7 @@ checksum = "42f5e15c9953c5e4ccceeb2e7382a716482c34515315f7b03532b8b4e8393d2d"
 [[package]]
 name = "overpass_parser_rust"
 version = "0.1.0"
-source = "git+https://github.com/teritorio/overpass_parser_rust?branch=master#3883fce64195ccde7645d6e696231f2e5fc56742"
+source = "git+https://github.com/teritorio/overpass_parser_rust?branch=master#3be8573a1a80a67f04586f3fa6188792ed24ad20"
 dependencies = [
  "derivative",
  "pest",
