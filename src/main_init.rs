@@ -1,7 +1,6 @@
-use futures::executor::block_on;
-
 use crate::backend::BackendType;
 
+#[tokio::main]
 async fn init_async() -> () {
     let dialect = BackendType::new(false).await;
 
@@ -9,5 +8,5 @@ async fn init_async() -> () {
 }
 
 pub fn init() {
-    block_on(init_async());
+    init_async();
 }
