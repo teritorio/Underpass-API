@@ -12,7 +12,7 @@ docker compose run --rm quackosm
 ```
 
 ```sh
-quackosm /data/landes-latest.osm.pbf
+quackosm --no-sort /data/landes-latest.osm.pbf
 mv files/landes-latest_nofilter_noclip_compact.parquet /data/landes-latest_nofilter_noclip_compact.parquet
 ```
 
