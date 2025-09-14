@@ -17,11 +17,12 @@
     "pkg"
   ],
   "scripts": {
-    "build:wasm": "wasm-pack build --target web --out-dir ./pkg",
-    "build:lib": "vite build",
-    "build": "yarn build:wasm && yarn build:lib",
     "dev": "vite",
     "preview": "vite preview",
+    "build:wasm": "wasm-pack build --target web --out-dir ./pkg",
+    "build:lib": "vite build",
+    "build": "yarn build:wasm && yarn build:lib && ln -s ../data dist/data",
+    "serve": "serve --symlinks --cors dist",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0"
   },
   "devDependencies": {
@@ -30,6 +31,7 @@
     "@typescript-eslint/parser": "^8.35.1",
     "eslint": "^9.30.1",
     "typescript": "^5.8.3",
+    "serve": "14.2.5",
     "vite": "^7.0.0",
     "vite-plugin-dts": "^4.5.4"
   },

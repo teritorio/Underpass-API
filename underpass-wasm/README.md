@@ -16,7 +16,7 @@ yarn build
 
 Folow data setup from [../src/duckdb_quackosm/README.md], but do not run the server.
 
-## Run
+## Dev
 
 Run the demo
 ```
@@ -24,6 +24,20 @@ yarn dev
 ```
 
 Then go to http://localhost:5173/
+
+Note, the embedded HTTP server with dev does not support the HTTP range requests to partially download Parquet files. It falls back to full download of Parquet files, obviously, that is not the expected behavior.
+
+## Build
+
+```
+yarn build
+```
+
+Then serve the static content with an HTTP web server supporting [HTTP range requests](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Range_requests) to partially download Parquet files.
+
+```
+yarn serve
+```
 
 ## Reuse the lib
 

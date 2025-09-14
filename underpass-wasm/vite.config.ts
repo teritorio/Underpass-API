@@ -16,7 +16,11 @@ export default defineConfig({
       formats: ['es', 'umd'],
       fileName: (format) => `underpass.${format}.js`
     },
+    reportCompressedSize: false,
     rollupOptions: {
+      input: {
+        main: 'index.html'
+      },
       external: [],
       output: {
         globals: {}
