@@ -6,10 +6,26 @@ In other word, an engin able to execute (part of) Overpass Query without the nee
 
 Yes, it works.
 
-## How to use it
+## Build
 
-Have a remote OpenStreetMap Parquet file produced by [QuackOSM](https://github.com/kraina-ai/quackosm).
+```
+yarn build
+```
 
+## Prepare data
+
+Folow data setup from [../src/duckdb_quackosm/README.md], but do not run the server.
+
+## Run
+
+Run the demo
+```
+yarn dev
+```
+
+Then go to http://localhost:5173/
+
+## Reuse the lib
 
 ```bash
 yarn add @teritorio/underpass
@@ -18,19 +34,11 @@ yarn add @teritorio/underpass
 ```ts
 import Underpass from '@teritorio/underpass'
 
-Underpass.getConnection('http://localhost:5173/extract_nofilter_noclip_compact.parquet', (connection: Underpass.Connection) => {
+Underpass.getConnection('http://localhost:5173/data/extract_nofilter_noclip_compact.parquet', (connection: Underpass.Connection) => {
     connection.query('node[amenity=drinking_water];out;', (osm_object) => {
         console.log(osm_object);
     });
 });
-```
-
-## Dev
-
-Build
-```
-yarn build
-yarn dev
 ```
 
 ## Licence
