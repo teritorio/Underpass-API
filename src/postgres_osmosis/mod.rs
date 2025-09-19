@@ -95,12 +95,16 @@ GROUP BY
     async fn exec(&mut self, sqls: Vec<String>) -> Vec<String> {
         let mut sqls = sqls;
         let last_sql = sqls.pop().expect("No SQL queries to execute").to_string();
-        self.con
-            .batch_execute(sqls.join("\n").as_str())
+        let tx = self
+            .con
+            .transaction()
+            .await
+            .expect("Failed to start transaction");
+
+        tx.batch_execute(sqls.join("\n").as_str())
             .await
             .expect("Failed to execute SQL query");
-        self.con
-            .query(&last_sql.to_string(), &[])
+        tx.query(&last_sql.to_string(), &[])
             .await
             .expect("Failed to execute SQL query")
             .iter()

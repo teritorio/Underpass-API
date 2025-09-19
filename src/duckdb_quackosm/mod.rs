@@ -59,13 +59,11 @@ impl Backend for DuckdbQuackosm {
     async fn exec(&mut self, sqls: Vec<String>) -> Vec<String> {
         let mut sqls = sqls;
         let last_sql = sqls.pop().expect("No SQL queries to execute");
-        self.con
-            .execute_batch(sqls.join("\n").as_str())
+        let tx = self.con.transaction().expect("Failed to start transaction");
+
+        tx.execute_batch(sqls.join("\n").as_str())
             .expect("Failed to execute SQL query");
-        let mut stmt = self
-            .con
-            .prepare(&last_sql)
-            .expect("Failed to execute SQL query");
+        let mut stmt = tx.prepare(&last_sql).expect("Failed to execute SQL query");
         stmt.query_map([], |row| Ok(row.get::<usize, String>(0).unwrap()))
             .unwrap()
             .map(|result| result.ok().unwrap())
