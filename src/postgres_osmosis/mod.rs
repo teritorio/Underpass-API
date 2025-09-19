@@ -51,7 +51,7 @@ impl Backend for PostgresOsmosis {
         Self::exec_sql_file(&self.con, "src/postgres_osmosis/init.sql").await;
     }
 
-    fn parse_query(&self, query: &str) -> Result<String, String> {
+    fn parse_query(&self, query: &str) -> Result<Vec<String>, String> {
         match parse_query(query) {
             Err(e) => Err(e.to_string()),
             Ok(request) => {
@@ -92,18 +92,15 @@ GROUP BY
         }
     }
 
-    async fn exec(&mut self, sql: String) -> Vec<String> {
-        let mut sql = sql.to_string();
-        if sql.starts_with("SET statement_timeout") {
-            let (timeout, s) = sql.split_once(';').unwrap();
-            self.con
-                .execute(&timeout.to_string(), &[])
-                .await
-                .expect("Failed to set statement timeout");
-            sql = s.to_string();
-        }
+    async fn exec(&mut self, sqls: Vec<String>) -> Vec<String> {
+        let mut sqls = sqls;
+        let last_sql = sqls.pop().expect("No SQL queries to execute").to_string();
         self.con
-            .query(&sql.to_string(), &[])
+            .batch_execute(sqls.join("\n").as_str())
+            .await
+            .expect("Failed to execute SQL query");
+        self.con
+            .query(&last_sql.to_string(), &[])
             .await
             .expect("Failed to execute SQL query")
             .iter()

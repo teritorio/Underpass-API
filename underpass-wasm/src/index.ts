@@ -24,12 +24,12 @@ class Connection {
   }
 
   async query(overpass: string): Promise<IterableIterator<Object>> {
-    const sql = await underpass.query(overpass)
+    const sqls = (await underpass.query(overpass)).join('\n');
     this.status(`Parsing Overpass query\n${overpass}`);
 
-    this.status(`SQL query\n${sql}`);
+    this.status(`SQL query\n${sqls}`);
     const startTimeS = performance.now();
-    const result = await this.connection.query(sql);
+    const result = await this.connection.query(sqls);
     const endTimeS = performance.now();
     this.status(`Execution of SQL query in ${endTimeS - startTimeS}ms`);
 

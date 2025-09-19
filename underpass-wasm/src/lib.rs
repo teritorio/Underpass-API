@@ -12,7 +12,7 @@ pub fn prepare(parquet: &str) -> String {
 }
 
 #[wasm_bindgen]
-pub async fn query(query: &str) -> Result<String, String> {
+pub async fn query(query: &str) -> Result<Vec<String>, String> {
     match parse_query(query) {
         Ok(request) => Ok(request.to_sql(
             &Duckdb as &(dyn SqlDialect + Send + Sync),

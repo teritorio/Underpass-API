@@ -8,9 +8,9 @@ pub trait Backend {
 
     async fn init(&self) -> ();
 
-    fn parse_query(&self, query: &str) -> Result<String, String>;
+    fn parse_query(&self, query: &str) -> Result<Vec<String>, String>;
 
-    async fn exec(&mut self, query: String) -> Vec<String>;
+    async fn exec(&mut self, query: Vec<String>) -> Vec<String>;
 }
 
 pub enum BackendType {
@@ -72,7 +72,7 @@ impl BackendType {
         }
     }
 
-    pub fn parse_query(&self, query: &str) -> Result<String, String> {
+    pub fn parse_query(&self, query: &str) -> Result<Vec<String>, String> {
         match self {
             #[cfg(feature = "postgres")]
             BackendType::PostgresOsmosis(backend) => backend.parse_query(query),
@@ -81,12 +81,12 @@ impl BackendType {
         }
     }
 
-    pub async fn exec(&mut self, query: String) -> Vec<String> {
+    pub async fn exec(&mut self, queries: Vec<String>) -> Vec<String> {
         match self {
             #[cfg(feature = "postgres")]
-            BackendType::PostgresOsmosis(backend) => backend.exec(query).await,
+            BackendType::PostgresOsmosis(backend) => backend.exec(queries).await,
             #[cfg(feature = "duckdb")]
-            BackendType::DuckdbQuackosm(backend) => backend.exec(query).await,
+            BackendType::DuckdbQuackosm(backend) => backend.exec(queries).await,
         }
     }
 }
