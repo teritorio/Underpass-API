@@ -51,3 +51,13 @@ WORKDIR /usr/src/underpass-api
 COPY src ./src
 
 CMD ["underpass-api", "serve"]
+
+EXPOSE 9292
+
+HEALTHCHECK \
+    --start-interval=1s \
+    --start-period=30s \
+    --interval=30s \
+    --timeout=20s \
+    --retries=5 \
+    CMD curl -f http://127.0.0.1:9292/up || exit 1

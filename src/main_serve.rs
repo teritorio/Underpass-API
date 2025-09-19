@@ -1,7 +1,7 @@
 use axum::Router;
 use axum::body::Body;
 use axum::extract::Request;
-use axum::http::{Method, Uri};
+use axum::http::{Method, StatusCode, Uri};
 use axum::middleware::Next;
 use axum::response::Response;
 use axum::routing::{get, post};
@@ -29,6 +29,14 @@ async fn uri_middleware(request: Request<Body>, next: Next) -> Response {
     let mut response = next.run(request).await;
     response.extensions_mut().insert(RequestUri(uri));
     response
+}
+
+#[axum::debug_handler]
+pub async fn get_health_status() -> Response<Body> {
+    Response::builder()
+        .status(StatusCode::NO_CONTENT)
+        .body(Body::empty())
+        .unwrap()
 }
 
 #[tokio::main]
@@ -59,6 +67,7 @@ async fn serve_async() -> () {
         );
 
     let app = Router::new()
+        .route("/up", get(get_health_status))
         .route("/interpreter", get(query_get))
         .route("/interpreter", post(query_post))
         .with_state(Arc::new(Mutex::new(Box::new(dialect))))
