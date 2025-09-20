@@ -13,5 +13,5 @@ crate-type = ["cdylib"]
 
 [dependencies]
 overpass_parser_rust = { git = "https://github.com/teritorio/overpass_parser_rust", branch = "master" }
-wasm-bindgen = "0.2.100"
-wasm-bindgen-futures = "0.4.50"
+wasm-bindgen = "0.2.103"
+wasm-bindgen-futures = "0.4.53"
