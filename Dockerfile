@@ -42,7 +42,7 @@ FROM archlinux:base AS runtime
 COPY --from=builder /tmp/duckdb-bin/*.pkg.tar.zst /tmp/duckdb-bin/
 RUN pacman -U --noconfirm /tmp/duckdb-bin/*.pkg.tar.zst
 
-RUN curl https://extensions.duckdb.org/v1.4.0/linux_amd64/spatial.duckdb_extension.gz > /tmp/spatial.duckdb_extension.gz && \
+RUN curl https://extensions.duckdb.org/$(duckdb --version | cut -d ' ' -f 1)/linux_amd64/spatial.duckdb_extension.gz > /tmp/spatial.duckdb_extension.gz && \
     duckdb -c "INSTALL '/tmp/spatial.duckdb_extension.gz';"
 
 COPY --from=builder /usr/local/bin/underpass-api /usr/local/bin/underpass-api
