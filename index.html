@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Underpass WASM Demo</title>
+  <script type="module" crossorigin src="/underpass.umd.js"></script>
+</head>
+
+<body>
+  <h1>Underpass WASM</h1>
+
+  <p>Underpass as Overpass Query converter to SQL</p>
+
+  <p>Underpass WASM is an engin able to execute (part of) Overpass Query without the need of an Overpass-API server.
+    Using an in browser WASM Overpass Query converter to SQL and a WASM DuckDB/QuackOSM data base relying on a remote
+    static Parquet file produced using QuackOSM.</p>
+
+  <h2>Demo</h2>
+  <form>
+    <label for="parquet">QuackOSM Parquet file URL</label></br>
+    <input type="text" id="parquet" name="parquet" size="60" value="https://underpass-dev.teritorio.xyz/data/france_metro_dom_com_nc-latest_nofilter_noclip_compact.parquet" /><br>
+
+    <label for="overpass-query">Overpass Query</label></br>
+    <textarea id="overpass-query" rows="10" cols="60" placeholder="Enter your Overpass query here">
+[out:json][timeout:25];
+(
+  nwr[highway=bus_stop][name];
+  nwr[public_transport=platform];
+);
+out center meta;
+    </textarea></br>
+
+    <button id="submit-query" type="submit">Run with Underpass</button>
+  </form>
+
+  <pre id="log"></pre>
+
+</body>
+
+</html>
