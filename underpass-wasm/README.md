@@ -16,6 +16,8 @@ yarn build
 
 Folow data setup from [../src/duckdb_quackosm/README.md], but do not run the server.
 
+Adjust `.env` file from `.env.template` to set the default Parquet file URL.
+
 ## Dev
 
 Run the demo

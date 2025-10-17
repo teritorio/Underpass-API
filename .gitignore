@@ -1,5 +1,6 @@
 target
 .vscode
+underpass-wasm/.env
 underpass-wasm/dist
 underpass-wasm/pkg
 underpass-wasm/node_modules
